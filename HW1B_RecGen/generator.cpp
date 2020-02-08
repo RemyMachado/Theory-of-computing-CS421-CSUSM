@@ -3,7 +3,6 @@
 #include <queue>
 
 using namespace std;
-// ** include queue.h or equivalent such as <queue>
 
 //----------------------------------------------
 // CS421 HW1
@@ -14,6 +13,11 @@ using namespace std;
 #define PROGRAM_SUCCESS 0
 #define ALPHABET_RECOGNIZED "01"
 #define ALPHABET_STRING_GENERATION "012"
+#define RECOGNIZED_MSG_SUFFIX " is binary"
+
+void PrintRecognition(string const &value) {
+    cout << value << RECOGNIZED_MSG_SUFFIX << endl;
+}
 
 /* Recognizer  for L = { x | x is a binary number } */
 bool recognizer(string s) {
@@ -26,37 +30,34 @@ bool recognizer(string s) {
     return s.find_first_not_of(ALPHABET_RECOGNIZED) == string::npos;
 }
 
-void PrintFirstChar() {
-    cout << ALPHABET_STRING_GENERATION[0] << std::endl;
-}
-
 int main() {
     queue<string> generationQueue;
     auto alphabetStringGeneration = string(ALPHABET_STRING_GENERATION);
 
-    if (string(ALPHABET_STRING_GENERATION).empty()) {
+    if (alphabetStringGeneration.empty()) {
         return PROGRAM_SUCCESS;
     }
 
-    // print it, because it should not be pushed to the queue
-    PrintFirstChar();
-
-    // populate the queue with the alphabet, except the first char
-    for (auto it = alphabetStringGeneration.begin() + 1; it < alphabetStringGeneration.end(); ++it) {
-        generationQueue.push(string(1, *it));
+    // generate |E| first elements. i.e. populate the queue with the alphabet
+    for (auto const &element : alphabetStringGeneration) {
+        generationQueue.push(string(1, element));
     }
 
-    for (int i = 0; i < 2000; ++i) {
+    // infinite loop, because "The user must somehow interactively terminate"
+    while (true) {
+        // retrieve the oldest generated string and remove it from the storage
         string poppedValue = generationQueue.front();
         generationQueue.pop();
-        cout << poppedValue << std::endl;
 
-        for (auto it = alphabetStringGeneration.begin(); it < alphabetStringGeneration.end(); ++it) {
-            generationQueue.push(poppedValue + *it);
+        // display oldest generated string if recognized
+        if (recognizer(poppedValue)) {
+            PrintRecognition(poppedValue);
         }
 
-        // ** generate a string
-        // ** if the recognizer says true, display it
+        // generate next |E| strings and put them in the storage
+        for (auto const &element : alphabetStringGeneration) {
+            generationQueue.push(poppedValue + element);
+        }
     }
 
     return PROGRAM_SUCCESS;
