@@ -12,7 +12,8 @@ using namespace std;
 //----------------------------------------------
 
 #define PROGRAM_SUCCESS 0
-#define ALPHABET "01"
+#define ALPHABET_RECOGNIZED "01"
+#define ALPHABET_STRING_GENERATION "012"
 
 /* Recognizer  for L = { x | x is a binary number } */
 bool recognizer(string s) {
@@ -22,27 +23,37 @@ bool recognizer(string s) {
     }
 
     // reject if a character does not belong to the alphabet
-    return s.find_first_not_of(ALPHABET) == string::npos;
+    return s.find_first_not_of(ALPHABET_RECOGNIZED) == string::npos;
+}
+
+void PrintFirstChar() {
+    cout << ALPHABET_STRING_GENERATION[0] << std::endl;
 }
 
 int main() {
     queue<string> generationQueue;
+    auto alphabetStringGeneration = string(ALPHABET_STRING_GENERATION);
 
-    cout << '0' << std::endl;
-    generationQueue.push("1");
-    generationQueue.push("2");
+    if (string(ALPHABET_STRING_GENERATION).empty()) {
+        return PROGRAM_SUCCESS;
+    }
 
-    for (int i = 0; i < 1000; ++i) {
+    // print it, because it should not be pushed to the queue
+    PrintFirstChar();
+
+    // populate the queue with the alphabet, except the first char
+    for (auto it = alphabetStringGeneration.begin() + 1; it < alphabetStringGeneration.end(); ++it) {
+        generationQueue.push(string(1, *it));
+    }
+
+    for (int i = 0; i < 2000; ++i) {
         string poppedValue = generationQueue.front();
         generationQueue.pop();
         cout << poppedValue << std::endl;
 
-        generationQueue.push(poppedValue + '0');
-        generationQueue.push(poppedValue + '1');
-
-        string lastToPush = poppedValue + '2';
-        generationQueue.push(lastToPush);
-
+        for (auto it = alphabetStringGeneration.begin(); it < alphabetStringGeneration.end(); ++it) {
+            generationQueue.push(poppedValue + *it);
+        }
 
         // ** generate a string
         // ** if the recognizer says true, display it
