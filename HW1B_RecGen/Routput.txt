@@ -1,0 +1,19 @@
+Script started on ven. 07 févr. 2020 19:39:29 PST
+]0;macha023@empress:~[?1034h[macha023@empress ~]$ g++ recognizer.cpp 
+]0;macha023@empress:~[macha023@empress ~]$ ./a.out
+0
+YES IN L
+1
+YES IN L
+00110
+YES IN L
+2
+NO NOT IN L
+02
+NO NOT IN L
+31
+NO NOT IN L
+]0;macha023@empress:~[macha023@empress ~]$ exit
+exit
+
+Script done on ven. 07 févr. 2020 19:40:09 PST
