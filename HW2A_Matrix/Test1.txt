@@ -1,0 +1,11 @@
+Script started on ven. 21 févr. 2020 22:04:41 PST
+]0;macha023@empress:~[?1034h[macha023@empress ~]$ g+exi[1Pn./a.ou[16@g++ --std=c++11 mat.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[3Pmv lines.txt lines.tg++ --std=c++11 mat.cpp 
+]0;macha023@empress:~[macha023@empress ~]$ ./a.out 
+Reading table from lines.txt...
+0| a b c | d e f | - - - | - - - 
+1| - - - | - - - | g h i | j k l 
+2| - - - | - - - | - - - | - - - 
+]0;macha023@empress:~[macha023@empress ~]$ exit
+exit
+
+Script done on ven. 21 févr. 2020 22:04:53 PST
