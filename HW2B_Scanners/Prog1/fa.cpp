@@ -8,6 +8,9 @@ using namespace std;
 #define CURRENT_STATE_PREFIX_MSG "current state: "
 #define CURRENT_CHAR_PREFIX_MSG "character: "
 #define STUCK_IN_STATE_PREFIX_MSG "I am stuck in state "
+#define SCANNER_CALLED_MSG ".....Scanner was called..."
+#define WORD_PREFIX_MSG ">>>>>Word is:"
+#define LEXICAL_ERROR_MSG ">>>>>Lexical Error: The string is not in my language"
 
 enum TOKEN_TYPE {
     ERROR, MY_TOKEN, IDENT, REAL, INT
@@ -43,7 +46,7 @@ bool mytoken(string s) {
         else if (state == 2 && s[charpos] == 'b')
             state = 2;
         else {
-            cout << STUCK_IN_STATE_PREFIX_MSG << state << endl;
+            cout << "I am stuck in state " << state << endl;
             return (false);
         }
         charpos++;
@@ -63,11 +66,12 @@ bool ident_token(string const &word) {
 
     cout << IDENT_TYPE_START_MSG << endl;
 
+    // loop through all characters of the word
     for (char const &character : word) {
         cout << CURRENT_STATE_PREFIX_MSG << state << endl;
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
-        // condition of transitions for the regular expression
+        // transitions of the regular expression
         if (state == 0 && character == 'a') {
             state = acceptedState;
         } else if (state == acceptedState &&
@@ -92,11 +96,12 @@ bool real_token(string const &word) {
 
     cout << IDENT_TYPE_START_MSG << endl;
 
+    // loop through all characters of the word
     for (char const &character : word) {
         cout << CURRENT_STATE_PREFIX_MSG << state << endl;
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
-        // condition of transitions for the regular expression
+        // transitions of the regular expression
         if (state == 0 && character == '2') {
             continue;
         } else if (state == 0 && character == '.') {
@@ -123,11 +128,12 @@ bool integer_token(string const &word) {
 
     cout << IDENT_TYPE_START_MSG << endl;
 
+    // loop through all characters of the word
     for (char const &character : word) {
         cout << CURRENT_STATE_PREFIX_MSG << state << endl;
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
-        // condition of transitions for the regular expression
+        // transitions of the regular expression
         if (character == '2') {
             state = acceptedState;
         } else {
@@ -142,30 +148,30 @@ bool integer_token(string const &word) {
 
 fstream fin;   // file stream to use
 
-// Scanner sets the_type and w - TO BE COMPLETED **
-int scanner(TOKEN_TYPE &the_type, string &w) {
+// scans a word by calling every DFA of the language
+int scanner(TOKEN_TYPE &tokenType, string &word) {
 
-    // This goes through all machines one by one on the input string w
+    // This goes through all machines one by one on the input string word
 
-    cout << endl;
-    cout << ".....Scanner was called..." << endl;
+    cout << endl << SCANNER_CALLED_MSG << endl;
 
-    fin >> w;  // grab next word from fain.txt
-    cout << ">>>>>Word is:" << w << endl;
+    fin >> word;  // grab next word from the given file
+    cout << WORD_PREFIX_MSG << word << endl;
 
-    if (mytoken(w)) {
-        the_type = MY_TOKEN;
-    }
-
-        // ** add other if-then's here in the right order to go through
-        // ** all FAs one by one and set the_type to be IDENT, REAL or INT.
-
-    else //none of the FAs returned TRUE
+    // try each DFA one by one
+    if (mytoken(word)) {
+        tokenType = MY_TOKEN;
+    } else if (ident_token(word)) {
+        tokenType = IDENT;
+    } else if (real_token(word)) {
+        tokenType = REAL;
+    } else if (integer_token(word)) {
+        tokenType = INT;
+    } else //none of the FAs returned TRUE
     {
-        cout << ">>>>>Lexical Error: The string is not in my language" << endl;
-        the_type = ERROR;
+        cout << LEXICAL_ERROR_MSG << endl;
+        tokenType = ERROR;
     }
-
 }//the very end of scanner
 
 // The test-driver -- NO NEED TO CHANGE THIS
@@ -180,10 +186,11 @@ int main() {
 
     string tokens[5] = {"ERROR", "MY_TOKEN", "IDENT", "REAL", "INT"};
 
+    // scan all the words of the file until a chosen one
     while (true)  // keep on going
     {
         scanner(thetype, theword);  // the parameters will be set by Scanner
-        if (theword == "EOF") break;
+        if (theword == "EOF") break; // the scanner stops if it encounters this word
 
         cout << ">>>>>Type is:" << tokens[thetype] << endl;
     }
