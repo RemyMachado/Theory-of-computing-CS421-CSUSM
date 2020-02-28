@@ -4,7 +4,9 @@
 
 using namespace std;
 
-#define IDENT_TYPE_START_MSG "Trying the IDENT_TYPE machine..."
+#define IDENT_TYPE_START_MSG "Trying the IDENT type machine..."
+#define REAL_TYPE_START_MSG "Trying the REAL type machine..."
+#define INT_TYPE_START_MSG "Trying the INT type machine..."
 #define CURRENT_STATE_PREFIX_MSG "current state: "
 #define CURRENT_CHAR_PREFIX_MSG "character: "
 #define STUCK_IN_STATE_PREFIX_MSG "I am stuck in state "
@@ -59,7 +61,7 @@ bool mytoken(string s) {
 
 
 // IDENT DFA
-// This FA is for RE: ** a(b | 2 | _ )^*
+// This FA is for RE: ** (a | b)(a | b | 2 | 3 | _ )^*
 bool ident_token(string const &word) {
     unsigned int state = 0;
     unsigned int const acceptedState = 1;
@@ -72,10 +74,12 @@ bool ident_token(string const &word) {
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
         // transitions of the regular expression
-        if (state == 0 && character == 'a') {
+        if (state == 0 && (character == 'a' || character == 'b')) {
             state = acceptedState;
         } else if (state == acceptedState &&
-                   (character == 'b' || character == '2' || character == '_')) {
+                   (character == 'a' || character == 'b' ||
+                    character == '2' || character == '3' ||
+                    character == '_')) {
             continue;
         } else {
             cout << STUCK_IN_STATE_PREFIX_MSG << state << endl;
@@ -89,12 +93,12 @@ bool ident_token(string const &word) {
 
 
 // REAL DFA
-// This FA is for RE: ** 2^*.3^+
+// This FA is for RE: ** (2 | 3)^*.(2 | 3)^+
 bool real_token(string const &word) {
     unsigned int state = 0;
     unsigned int const acceptedState = 2;
 
-    cout << IDENT_TYPE_START_MSG << endl;
+    cout << REAL_TYPE_START_MSG << endl;
 
     // loop through all characters of the word
     for (char const &character : word) {
@@ -102,12 +106,12 @@ bool real_token(string const &word) {
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
         // transitions of the regular expression
-        if (state == 0 && character == '2') {
+        if (state == 0 && (character == '2' || character == '3')) {
             continue;
         } else if (state == 0 && character == '.') {
             state = 1;
         } else if ((state == 1 || state == acceptedState)
-                   && character == '3') {
+                   && (character == '2' || character == '3')) {
             state = acceptedState;
         } else {
             cout << STUCK_IN_STATE_PREFIX_MSG << state << endl;
@@ -121,12 +125,12 @@ bool real_token(string const &word) {
 
 
 //INT DFA
-// This FA is for RE: ** 2^+
+// This FA is for RE: ** (2 | 3)^+
 bool integer_token(string const &word) {
     unsigned int state = 0;
     unsigned int const acceptedState = 1;
 
-    cout << IDENT_TYPE_START_MSG << endl;
+    cout << INT_TYPE_START_MSG << endl;
 
     // loop through all characters of the word
     for (char const &character : word) {
@@ -134,7 +138,7 @@ bool integer_token(string const &word) {
         cout << CURRENT_CHAR_PREFIX_MSG << character << endl;
 
         // transitions of the regular expression
-        if (character == '2') {
+        if (character == '2' || character == '3') {
             state = acceptedState;
         } else {
             cout << STUCK_IN_STATE_PREFIX_MSG << state << endl;
